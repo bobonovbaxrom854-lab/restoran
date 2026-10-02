@@ -53,4 +53,7 @@ A.put('/categories/:id',(q,r)=>{const n=String(q.body.name||'').trim();if(!n)ret
 A.delete('/categories/:id',(q,r)=>{db.prepare('UPDATE items SET category_id=NULL WHERE category_id=?').run(q.params.id);db.prepare('DELETE FROM categories WHERE id=?').run(q.params.id);r.json({ok:1});});
 A.put('/settings',(q,r)=>{const u=db.prepare('INSERT OR REPLACE INTO settings VALUES(?,?)');for(const k of ['name','phone','address','hours','delivery','min','about'])if(q.body[k]!==undefined)u.run(k,String(q.body[k]));
 if(q.body.password){if(q.body.password.length<6)return err(r,'Parol kamida 6 belgi');const s=crypto.randomBytes(16).toString('hex');db.prepare('UPDATE admin SET salt=?,hash=? WHERE id=1').run(s,hash(q.body.password,s));}r.json({ok:1});});
-app.listen(3000,()=>console.log('Sayt: http://localhost:3000   Admin: http://localhost:3000/admin.html'));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Sayt ishga tushdi: ${PORT}`);
+});
